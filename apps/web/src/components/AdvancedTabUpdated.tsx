@@ -400,13 +400,13 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
                   name="startDate"
                   value={localFormData.startDate}
                   onChange={handleStartDateChange}
-                  label={t('inicio_vigencia', 'Início Vigência')}
+                  label={t('start_date')}
               />
 
               {/* Dia(s) */}
               <div>
                 <label className="block text-sm text-gray-500 mb-1">
-                  {t('dias', 'Dia(s)')}
+                  {t('days')}
                 </label>
                 <div className="relative">
                   <input
@@ -424,13 +424,13 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
                   name="endDate"
                   value={localFormData.endDate}
                   onChange={handleEndDateChange}
-                  label={t('final_vigencia', 'Final Vigência')}
+                  label={t('end_date')}
               />
 
               {/* Valor Garantia */}
               <div>
                 <label className="block text-sm text-gray-500 mb-1">
-                  {t('valor_garantia', 'Valor Garantia')}
+                  {t('guarantee_value')}
                 </label>
                 <input
                     type="text"
@@ -445,7 +445,7 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
             {/* Moeda */}
             <div className="mb-6">
               <label className="block text-sm text-gray-500 mb-1">
-                {t('moeda', 'Moeda')}
+                {t('currency')}
               </label>
               <div className="relative w-40">
                 <select
@@ -470,13 +470,13 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
                   className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
                   onClick={onGenerateQuote}
               >
-                {t('abrir_conta', 'Abrir Conta')}
+                {t('open_account')}
               </button>
               <button
                   className="px-6 py-3 text-gray-700 hover:text-gray-900"
                   onClick={handleCancel}
               >
-                {t('cancelar', 'Cancelar')}
+                {t('cancel')}
               </button>
             </div>
           </div>
@@ -486,45 +486,45 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
         {showSummary && (
             <div className="w-1/2 bg-white p-6 rounded-lg border border-gray-200">
               <h3 className="text-lg font-bold text-gray-800 mb-5">
-                {t('resumo_do_pedido', 'Resumo do Pedido')}
+                {t('order_summary')}
               </h3>
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('modalidade', 'Modalidade')}:</span>
+                  <span className="text-gray-600">{t('modality')}:</span>
                   <span className="font-semibold">{summary.modalidade}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('cobertura', 'Cobertura')}:</span>
+                  <span className="text-gray-600">{t('coverage')}:</span>
                   <span className="font-semibold">{summary.cobertura}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('valor_garantia', 'Valor Garantia')}:</span>
+                  <span className="text-gray-600">{t('guarantee_value')}:</span>
                   <span className="font-semibold">{summary.valorGarantia}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('inicio_vigencia', 'Início Vigência')}:</span>
+                  <span className="text-gray-600">{t('start_date')}:</span>
                   <span className="font-semibold">{summary.inicioVigencia}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('final_vigencia', 'Final Vigência')}:</span>
+                  <span className="text-gray-600">{t('end_date')}:</span>
                   <span className="font-semibold">{summary.finalVigencia}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('n_dias_cobertura', 'N. Dia(s) Cobertura')}:</span>
+                  <span className="text-gray-600">{t('coverage_days_count')}:</span>
                   <span className="font-semibold">{summary.dias}</span>
                 </div>
 
                 <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-                  <span className="text-gray-600">{t('premio_total', 'Prêmio Total')}:</span>
+                  <span className="text-gray-600">{t('total_premium')}:</span>
                   <span className="font-semibold text-blue-600">
-                                {summary.premioTotal}
-                            </span>
+                    {summary.premioTotal}
+                  </span>
                 </div>
               </div>
             </div>

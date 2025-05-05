@@ -1,5 +1,6 @@
 // PreviousQuotes.tsx
 import React from 'react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 
 interface Quote {
     id: string;
@@ -14,6 +15,8 @@ interface PreviousQuotesProps {
 }
 
 const PreviousQuotes: React.FC<PreviousQuotesProps> = ({ quotes, onSelectQuote }) => {
+    const { t } = useTranslation();
+
     return (
         <div className="space-y-4">
             {quotes.map((quote) => (
@@ -32,7 +35,7 @@ const PreviousQuotes: React.FC<PreviousQuotesProps> = ({ quotes, onSelectQuote }
 
             {quotes.length === 0 && (
                 <div className="text-center py-4 text-gray-500">
-                    Nenhuma cotação encontrada.
+                    {t('no_quotes_found')}
                 </div>
             )}
         </div>
