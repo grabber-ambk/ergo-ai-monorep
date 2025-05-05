@@ -1,0 +1,13 @@
+{
+  "name": "@ergo-ai/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "i18next": "^23.10.4",
+    "i18next-resources-to-backend": "^1.2.1",
+    "react": "^19.1.0",
+    "react-i18next": "^14.0.5"
+  }
+}

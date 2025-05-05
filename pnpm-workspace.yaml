@@ -1,0 +1,6 @@
+packages:
+  - apps/*      # Corrigido para incluir o 's'
+  - packages/*
+
+ignoredBuiltDependencies:
+  - '@swc/core'

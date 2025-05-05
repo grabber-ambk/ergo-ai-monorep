@@ -1,0 +1,41 @@
+'use client'
+
+import i18next from 'i18next'
+import { initReactI18next, useTranslation as useTranslationOrg } from 'react-i18next'
+import resourcesToBackend from 'i18next-resources-to-backend'
+import { useEffect } from 'react'
+// Modificar a importação para usar o componente interno no app web ou criar uma versão local
+// do hook useLocale dentro do pacote i18n
+import { useLocale } from '../../../apps/web/src/components/localeProvider'
+import { getSimplifiedLocale } from './settings'
+
+// Inicializa i18next com caminho para acessar os arquivos de locale
+// Adaptado para o monorepo
+i18next
+    .use(initReactI18next)
+    .use(resourcesToBackend((language: string, namespace: string) =>
+        import(`../../../apps/web/public/locales/${getSimplifiedLocale(language)}/${namespace}.json`)))
+    .init({
+        fallbackLng: 'pt-BR',
+        ns: ['common'],
+        defaultNS: 'common',
+        interpolation: {
+            escapeValue: false
+        }
+    })
+
+// Hook de tradução que sincroniza com o contexto de locale
+export function useTranslation(ns = 'common') {
+    const ret = useTranslationOrg(ns);
+    const { i18n } = ret;
+    const { locale } = useLocale();
+
+    // Atualiza o idioma quando o locale muda
+    useEffect(() => {
+        if (locale && i18n.language !== locale) {
+            i18n.changeLanguage(locale);
+        }
+    }, [locale, i18n]);
+
+    return { ...ret, locale };
+}

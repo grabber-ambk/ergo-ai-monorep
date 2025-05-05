@@ -1,0 +1,52 @@
+{
+  "welcome": "Welcome to Ergo AI Interface",
+  "description": "This is a simple Next.js application with i18n support.",
+
+  "crie_sua_conta": "Create your account",
+  "ja_e_cliente": "Already a customer?",
+  "faca_login": "Login",
+
+  "revisar_cadastro": "Review registration",
+  "finalizar_cadastro": "Complete registration",
+
+  "pais": "Country",
+  "nome_empresa": "Company Name",
+  "nome_completo": "Full Name",
+  "cnpj_tomador": "CNPJ - Policyholder",
+  "ein_tax_id": "EIN - Tax ID",
+  "perfil_usuario": "User Profile",
+  "email_profissional": "Professional Email",
+  "celular_whatsapp": "Mobile/WhatsApp",
+
+  "continuar": "Continue",
+  "cancelar": "Cancel",
+  "voltar": "Back",
+  "finalizar": "Finish",
+
+  "revise_ou_edite_as_informacoes": "Review or edit information",
+  "informacoes_pessoais": "Personal Information",
+  "informacoes_da_empresa": "Company Information",
+  "nome": "Name",
+  "email": "Email",
+  "telefone": "Phone",
+  "razao_social": "Legal Name",
+
+  "modalidades": "Modalities",
+  "select_a_modality": "Select a modality",
+  "error_loading_modalities": "Error loading modalities",
+
+  "coberturas": "Coverages",
+  "select_a_coverage": "Select a coverage",
+  "select_a_modality_first": "Select a modality first",
+  "inicio_vigencia": "Start Date",
+  "dias": "Day(s)",
+  "final_vigencia": "End Date",
+  "valor_garantia": "Guarantee Amount",
+  "moeda": "Currency",
+  "abrir_conta": "Open Account",
+  "resumo_do_pedido": "Order Summary",
+  "modalidade": "Modality",
+  "cobertura": "Coverage",
+  "n_dias_cobertura": "Number of Day(s) Coverage",
+  "premio_total": "Total Premium"
+}

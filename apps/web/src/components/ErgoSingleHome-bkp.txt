@@ -1,0 +1,915 @@
+"use client"
+
+import { useState, useEffect } from 'react';
+import {QuoteForm} from "@/components/QuoteForm";
+import {QuoteResult} from "@/components/QuoteResult";
+import {PreviousQuotes} from "@/components/PreviousQuotes";
+import {useTranslation} from "@ergo-ai/i18n/src/client";
+import {ChevronDown, Globe, Search, Settings, Upload, Plus, CheckCircle, Printer, Calendar, X, LogIn, Info} from "lucide-react";
+import {useFileUpload} from "@ergo-ai/hooks/src/useFileUpload";
+
+const ErgoSingleHome = () => {
+    const { t, locale, i18n } = useTranslation();
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [activeTab, setActiveTab] = useState('simple');
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showSignupModal, setShowSignupModal] = useState(false);
+    const [selectedCountry, setSelectedCountry] = useState('BR');
+
+    const [quoteStage, setQuoteStage] = useState<'upload' | 'confirm' | 'result'>('upload');
+    const [quoteData, setQuoteData] = useState<any>(null);
+    const [uploadedFilename, setUploadedFilename] = useState('');
+    const [fileSize, setFileSize] = useState('');
+    const [fileUploaded, setFileUploaded] = useState(false);
+
+    // Dados do formulário de cadastro
+    const [signupFormData, setSignupFormData] = useState({
+        companyName: '',
+        fullName: '',
+        taxId: '',
+        email: '',
+        phone: '+55'
+    });
+
+    // Advanced form state
+    const [advancedFormData, setAdvancedFormData] = useState({
+        modalidade: '',
+        startDate: '29/04/2025',
+        endDate: '29/04/2025',
+        days: '0',
+        guaranteeValue: 'R$ 0,00',
+        currency: 'BRL',
+        comissaoCorretorValue: 'R$ 0,00',
+        comissaoCorretorPercentage: '20.00%',
+        comissaoAgravada: 'R$ 0,00',
+        taxa: '5.00%'
+    });
+
+    // Effect para mostrar o modal de login após 30 segundos
+    useEffect(() => {
+        const loginTimer = setTimeout(() => {
+            setShowLoginModal(true);
+        }, 30000); // 30 segundos
+
+        return () => clearTimeout(loginTimer);
+    }, []);
+
+    // Função para abrir o modal de cadastro
+    const handleOpenSignupModal = () => {
+        setShowSignupModal(true);
+    };
+
+    // Função para fechar o modal de cadastro
+    const handleCloseSignupModal = () => {
+        setShowSignupModal(false);
+    };
+
+    // Função para lidar com alterações no formulário de cadastro
+    const handleSignupFormChange = (e) => {
+        const { name, value } = e.target;
+        setSignupFormData({
+            ...signupFormData,
+            [name]: value
+        });
+    };
+
+    // Função para lidar com a alteração do país
+    const handleCountryChange = (e) => {
+        const country = e.target.value;
+        setSelectedCountry(country);
+
+        // Resetar o campo de ID fiscal quando mudar o país
+        setSignupFormData({
+            ...signupFormData,
+            taxId: '',
+            phone: country === 'BR' ? '+55' : '+1' // Exemplo simples - ajustar conforme necessário
+        });
+    };
+
+    // Função para processar o envio do formulário
+    const handleSignupSubmit = (e) => {
+        e.preventDefault();
+        console.log('Dados de cadastro:', signupFormData);
+        // Aqui você processaria o cadastro
+        handleCloseSignupModal();
+    };
+
+
+    const {
+        file,
+        isUploading,
+        uploadProgress,
+        result,
+        handleFileSelect,
+        uploadAndAnalyze,
+        resetUpload,
+    } = useFileUpload();
+
+    // Dados simulados da cotação
+    const mockQuoteData = {
+        borrower: {
+            name: "3S SUPERMERCADO LTDA",
+            taxId: "46.189.831/0001-54",
+            address: "AVENIDA DOUTOR GENTIL DE MOURA, N.º 370, BOX 03, BAIRRO IPIRANGA",
+            zipCode: "04.208-053",
+            city: "SÃO PAULO",
+            state: "SP",
+            email: "3ssupermercado@gmail.com"
+        },
+        beneficiary: {
+            name: "DIA BRASIL SOCIEDADE LIMITADA EM RECUPERAÇÃO JUDICIAL",
+            taxId: "03.476.811/0001-51",
+            address: "AV IBIRAPUERA, N.º 2.332, BLOCO I - TORRES IBIRAPUERA I, 14º ANDAR, INDIANÓPOLIS",
+            zipCode: "04028-900",
+            city: "SÃO PAULO",
+            state: "SP"
+        },
+        guarantee: {
+            type: "GARANTIA FINANCEIRA",
+            coverage: "GARANTIA DE PAGAMENTO",
+            value: 200050.00,
+            startDate: "29/04/2025",
+            endDate: "29/04/2026",
+            days: 365,
+            reference: "903032025DBSL3SAL1",
+            proposal: "ICSMCP903032025",
+            purpose: "Garantia total as obrigações assumidas no Contrato de Franquia e contratos acessórios firmados entre as partes."
+        },
+        premium: 10002.50
+    };
+
+    // Toggle sidebar function
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
+    // Handle tab change
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+    };
+
+    // Handle advanced form input changes
+    const handleAdvancedFormChange = (e) => {
+        const { name, value } = e.target;
+        setAdvancedFormData({
+            ...advancedFormData,
+            [name]: value
+        });
+    };
+
+    // Simular o upload de arquivo
+    const handleFileSelected = (e) => {
+        const filename = 'SEI_64182677_Oficio_121.pdf';
+        setUploadedFilename(filename);
+        setFileSize('49 KB');
+        setFileUploaded(true);
+
+        // Optionally set the actual file if it exists
+        if (e?.target?.files?.[0]) {
+            handleFileSelect(e.target.files[0]);
+        }
+    };
+
+    // Função para gerar cotação (após upload do arquivo)
+    const handleGenerateQuote = () => {
+        console.log("Gerando cotação...");
+        setQuoteData(mockQuoteData);
+        setQuoteStage('confirm');
+    };
+
+    // Generate quote from advanced form
+    const handleGenerateAdvancedQuote = () => {
+        console.log("Gerando cotação do formulário avançado...");
+        // Here you would process the advanced form data
+        // For now, we'll just use the mock data
+        setQuoteData(mockQuoteData);
+        setQuoteStage('confirm');
+    };
+
+    // Função para confirmar cotação
+    const handleConfirmQuote = () => {
+        console.log("Confirmando cotação...");
+        setQuoteStage('result');
+    };
+
+    // Função para iniciar nova cotação
+    const handleNewQuote = () => {
+        resetUpload();
+        setUploadedFilename('');
+        setFileSize('');
+        setFileUploaded(false);
+        setQuoteData(null);
+        setQuoteStage('upload');
+        setActiveTab('simple');
+    };
+
+    const handleSelectQuote = async (quoteId: string) => {
+        try {
+            // In a real app, this would fetch the quote from the API
+            // For now, we'll just use our mock data
+            setQuoteData(mockQuoteData);
+            setQuoteStage('result');
+        } catch (error) {
+            console.error('Error fetching quote details:', error);
+            alert('Failed to load quote details. Please try again.');
+        }
+    };
+
+    const changeLanguage = (newLocale: string) => {
+        // In a real app, this would redirect to the new locale path
+        window.location.href = `/${newLocale}`;
+    };
+
+    // Language selector component
+    const LanguageSelector = () => (
+        <div className="flex items-center">
+            <Globe size={18} className="text-gray-500 mr-1" />
+            <select
+                value={locale}
+                onChange={(e) => changeLanguage(e.target.value)}
+                className="bg-transparent outline-none text-sm font-medium"
+            >
+                <option value="pt">Português</option>
+                <option value="en">English</option>
+            </select>
+            <ChevronDown size={14} className="text-gray-400 ml-1" />
+        </div>
+    );
+
+    // Tabbed interface component
+    const TabbedInterface = () => (
+        <div className="mb-6">
+            <div className="flex border-b border-gray-200">
+                <button
+                    className={`px-6 py-3 font-medium text-base ${activeTab === 'simple'
+                        ? 'border-b-2 border-blue-600 text-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'}`}
+                    onClick={() => handleTabChange('simple')}
+                >
+                    SIMPLES
+                </button>
+                <button
+                    className={`px-6 py-3 font-medium text-base ${activeTab === 'advanced'
+                        ? 'border-b-2 border-blue-600 text-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'}`}
+                    onClick={() => handleTabChange('advanced')}
+                >
+                    AVANÇADO
+                </button>
+            </div>
+        </div>
+    );
+
+    // Upload stage component
+    const UploadStage = () => (
+        <div className="flex flex-col items-center justify-center h-full px-6 py-8">
+            <TabbedInterface />
+
+            {activeTab === 'simple' ? (
+                // Simple tab content
+                <div className="w-full flex flex-col items-center">
+                    {!fileUploaded ? (
+                        // Empty upload state
+                        <div
+                            className="w-full max-w-xl h-64 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 transition-colors hover:border-blue-400 hover:bg-blue-50 cursor-pointer"
+                            onClick={() => document.getElementById('file-input')?.click()}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleFileSelected(e);
+                            }}
+                        >
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                                <Upload size={20} className="text-blue-500" />
+                            </div>
+                            <p className="text-gray-600 text-center mb-2">
+                                Arraste e solte seu arquivo aqui ou <span className="text-blue-500 font-medium">browse</span>
+                            </p>
+                            <p className="text-sm text-gray-500">.PDF (max. 10MB)</p>
+                            <input
+                                id="file-input"
+                                type="file"
+                                accept=".pdf"
+                                className="hidden"
+                                onChange={handleFileSelected}
+                            />
+                        </div>
+                    ) : (
+                        // File uploaded state
+                        <div className="w-full max-w-xl border border-gray-200 rounded-lg p-8 flex flex-col items-center">
+                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </div>
+                            <p className="text-gray-800 font-medium text-xl mb-1">{uploadedFilename}</p>
+                            <p className="text-gray-500 mb-6">{fileSize}</p>
+                        </div>
+                    )}
+
+                    <button
+                        id="generateButton"
+                        className={`mt-8 px-6 py-3 rounded-lg font-medium text-base transition-all
+                        ${fileUploaded
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                        disabled={!fileUploaded}
+                        onClick={handleGenerateQuote}
+                    >
+                        Gerar Cotação
+                    </button>
+                </div>
+            ) : (
+                // Advanced tab content
+                <div className="w-full max-w-4xl">
+                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 className="text-lg font-bold text-gray-800 mb-5">Basic information</h3>
+
+                        <div className="space-y-4">
+                            {/* Modalidades dropdown */}
+                            <div className="w-full">
+                                <select
+                                    name="modalidade"
+                                    value={advancedFormData.modalidade}
+                                    onChange={handleAdvancedFormChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                >
+                                    <option value="" disabled>Modalidades</option>
+                                    <option value="financeira">Garantia Financeira</option>
+                                    <option value="performance">Garantia de Performance</option>
+                                    <option value="judicial">Garantia Judicial</option>
+                                </select>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                {/* Start date */}
+                                <div className="relative">
+                                    <label className="block text-sm text-gray-500 mb-1">Start date</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            name="startDate"
+                                            value={advancedFormData.startDate}
+                                            onChange={handleAdvancedFormChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                            <Calendar size={18} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Days amount */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Days amount</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            name="days"
+                                            value={advancedFormData.days}
+                                            onChange={handleAdvancedFormChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex flex-col text-gray-400">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-1">
+                                                <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* End date */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">End date</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            name="endDate"
+                                            value={advancedFormData.endDate}
+                                            onChange={handleAdvancedFormChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                            <Calendar size={18} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Guarantee Value */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Guarantee Value</label>
+                                    <input
+                                        type="text"
+                                        name="guaranteeValue"
+                                        value={advancedFormData.guaranteeValue}
+                                        onChange={handleAdvancedFormChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                {/* Currency */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Currency</label>
+                                    <div className="relative">
+                                        <select
+                                            name="currency"
+                                            value={advancedFormData.currency}
+                                            onChange={handleAdvancedFormChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
+                                        >
+                                            <option value="BRL">BRL</option>
+                                            <option value="USD">USD</option>
+                                            <option value="EUR">EUR</option>
+                                        </select>
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                            <ChevronDown size={18} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Comissão Corretor ($) */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Comissão Corretor ($)</label>
+                                    <input
+                                        type="text"
+                                        name="comissaoCorretorValue"
+                                        value={advancedFormData.comissaoCorretorValue}
+                                        onChange={handleAdvancedFormChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+
+                                {/* Comissão Corretor (%) */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Comissão Corretor (%)</label>
+                                    <input
+                                        type="text"
+                                        name="comissaoCorretorPercentage"
+                                        value={advancedFormData.comissaoCorretorPercentage}
+                                        onChange={handleAdvancedFormChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+
+                                {/* Comissão Agravada */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Comissão Agravada</label>
+                                    <input
+                                        type="text"
+                                        name="comissaoAgravada"
+                                        value={advancedFormData.comissaoAgravada}
+                                        onChange={handleAdvancedFormChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+
+                                {/* Taxa */}
+                                <div>
+                                    <label className="block text-sm text-gray-500 mb-1">Taxa</label>
+                                    <input
+                                        type="text"
+                                        name="taxa"
+                                        value={advancedFormData.taxa}
+                                        onChange={handleAdvancedFormChange}
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between mt-8">
+                            <div className="flex gap-4">
+                                <button className="px-6 py-3 rounded-lg text-blue-600 border border-blue-600 hover:bg-blue-50">
+                                    Analise Contrato I.A
+                                </button>
+                                <button className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                    Definir Layout
+                                </button>
+                            </div>
+
+                            <div className="flex gap-4">
+                                <button className="px-6 py-3 text-red-500 hover:text-red-600">
+                                    Cancel
+                                </button>
+                                <button
+                                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                    onClick={handleGenerateAdvancedQuote}
+                                >
+                                    Gerar Proposta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
+    // Estágio de Confirmação
+    const ConfirmStage = () => (
+        <div className="flex flex-col items-center h-[calc(100vh-180px)] overflow-y-auto py-4 px-4">
+            <div className="w-full max-w-4xl bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <div className="border-b border-gray-200 pb-4 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800">Resumo do Pedido</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Modalidade:</span>
+                            <span className="font-semibold text-right">{mockQuoteData.guarantee.type}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Cobertura:</span>
+                            <span className="font-semibold text-right">{mockQuoteData.guarantee.coverage}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Valor Garantia:</span>
+                            <span className="font-semibold text-right">R$ {mockQuoteData.guarantee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Início Vigência:</span>
+                            <span className="font-semibold text-right">{mockQuoteData.guarantee.startDate}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Final Vigência:</span>
+                            <span className="font-semibold text-right">{mockQuoteData.guarantee.endDate}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Dia(s) Cobertura:</span>
+                            <span className="font-semibold text-right">{mockQuoteData.guarantee.days}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-700 text-base">Moeda:</span>
+                            <span className="font-semibold text-right">BRL</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h3 className="font-bold text-gray-800 mb-5 text-xl">Tomador / Borrower</h3>
+
+                        <div className="space-y-5">
+                            <div>
+                                <div className="text-sm text-gray-500">Nome / Name:</div>
+                                <div className="font-medium text-base">{mockQuoteData.borrower.name}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-sm text-gray-500">CNPJ / Tax ID:</div>
+                                <div className="font-medium text-base">{mockQuoteData.borrower.taxId}</div>
+                            </div>
+
+                            <div className="pt-4 border-t border-gray-200 mt-4">
+                                <div className="text-sm text-gray-500">Beneficiário / Beneficiary:</div>
+                                <div className="font-medium text-base">{mockQuoteData.beneficiary.name}</div>
+                            </div>
+
+                            <div>
+                                <div className="text-sm text-gray-500">CNPJ / Tax ID:</div>
+                                <div className="font-medium text-base">{mockQuoteData.beneficiary.taxId}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                        <div className="text-xl font-bold text-gray-800 mb-4 md:mb-0">
+                            Prêmio Total: <span className="text-blue-600">R$ {mockQuoteData.premium.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}</span>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <button
+                                className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                                onClick={handleNewQuote}
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all shadow-md"
+                                onClick={handleConfirmQuote}
+                            >
+                                Confirmar Cotação
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    // Estágio de Resultado
+    const ResultStage = () => (
+        <div className="flex flex-col items-center h-[calc(100vh-180px)] overflow-y-auto py-4 px-4">
+            <div className="w-full max-w-4xl">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Cotação de Seguro Garantia</h1>
+
+                    <div className="flex gap-4">
+                        <button
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                            onClick={handleNewQuote}
+                        >
+                            <Plus size={18} />
+                            Nova Cotação
+                        </button>
+
+                        <button
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md"
+                        >
+                            <Printer size={18} />
+                            Imprimir Cotação
+                        </button>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+                        <CheckCircle size={24} className="text-green-500" />
+                        <h2 className="text-2xl font-bold text-gray-800">Resumo do Pedido</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Modalidade:</span>
+                                <span className="font-semibold text-right">{mockQuoteData.guarantee.type}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Cobertura:</span>
+                                <span className="font-semibold text-right">{mockQuoteData.guarantee.coverage}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Valor Garantia:</span>
+                                <span className="font-semibold text-right">R$ {mockQuoteData.guarantee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Início Vigência:</span>
+                                <span className="font-semibold text-right">{mockQuoteData.guarantee.startDate}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Final Vigência:</span>
+                                <span className="font-semibold text-right">{mockQuoteData.guarantee.endDate}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">Dia(s) Cobertura:</span>
+                                <span className="font-semibold text-right">{mockQuoteData.guarantee.days}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+                                <span className="text-gray-700 text-base font-medium">Prêmio Total:</span>
+                                <span className="font-bold text-lg text-blue-600">R$ {mockQuoteData.premium.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('.', ',')}</span>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h3 className="font-bold text-gray-800 mb-5">Tomador / Borrower</h3>
+
+                            <div className="space-y-5">
+                                <div>
+                                    <div className="text-sm text-gray-500">Nome / Name:</div>
+                                    <div className="font-medium">{mockQuoteData.borrower.name}</div>
+                                </div>
+
+                                <div>
+                                    <div className="text-sm text-gray-500">CNPJ / Tax ID:</div>
+                                    <div className="font-medium">{mockQuoteData.borrower.taxId}</div>
+                                </div>
+
+                                <div className="pt-4 border-t border-gray-200 mt-4">
+                                    <div className="text-sm text-gray-500">Beneficiário / Beneficiary:</div>
+                                    <div className="font-medium">{mockQuoteData.beneficiary.name}</div>
+                                </div>
+
+                                <div>
+                                    <div className="text-sm text-gray-500">CNPJ / Tax ID:</div>
+                                    <div className="font-medium">{mockQuoteData.beneficiary.taxId}</div>
+                                </div>
+
+                                <div className="pt-4 border-t border-gray-200 mt-4">
+                                    <div className="text-sm text-gray-500">Objeto da Fiança / Purpose of Guarantee:</div>
+                                    <div className="font-medium text-sm mt-1">
+                                        {mockQuoteData.guarantee.purpose}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="text-sm text-gray-500">Carta fiança Nº / Bail Letter Nº:</div>
+                                    <div className="font-medium">{mockQuoteData.guarantee.reference}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 pt-6 border-t border-gray-200">
+                        <button
+                            className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                            onClick={handleOpenSignupModal}
+                        >
+                            Abrir Conta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+    // Mock Previous Quotes Component
+    const MockPreviousQuotes = () => (
+        <div className="space-y-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-all">
+                <div className="font-medium">3S SUPERMERCADO LTDA</div>
+                <div className="text-xs text-gray-500 mt-1">20/04/2025</div>
+                <div className="text-blue-600 font-medium mt-1">R$ 200.050,00</div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-all">
+                <div className="font-medium">TECH SOLUTIONS SA</div>
+                <div className="text-xs text-gray-500 mt-1">15/04/2025</div>
+                <div className="text-blue-600 font-medium mt-1">R$ 150.000,00</div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-all">
+                <div className="font-medium">CONSTRUÇÕES SILVA LTDA</div>
+                <div className="text-xs text-gray-500 mt-1">10/04/2025</div>
+                <div className="text-blue-600 font-medium mt-1">R$ 500.000,00</div>
+            </div>
+        </div>
+    );
+
+    // Modal de Login component
+    const LoginModal = () => (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Overlay semi-transparente */}
+            <div className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
+
+            {/* Conteúdo do Modal */}
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md z-10 p-6 relative">
+                <button
+                    onClick={() => setShowLoginModal(false)}
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                >
+                    <X size={20} />
+                </button>
+
+                <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <LogIn size={24} className="text-blue-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Faça login para continuar</h2>
+                    <p className="text-gray-600">Para utilizar a plataforma ERGO.AI, por favor faça login com a sua conta.</p>
+                </div>
+
+                <div className="space-y-4">
+                    <button className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium hover:bg-gray-50 transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                        </svg>
+                        Continuar com Google
+                    </button>
+
+                    <button className="w-full bg-blue-600 text-white rounded-lg py-3 px-4 font-medium hover:bg-blue-700 transition-all">
+                        Entrar com E-mail
+                    </button>
+                </div>
+
+                <div className="mt-6 text-center text-sm text-gray-500">
+                    Não tem uma conta? <a href="#" className="text-blue-600 font-medium hover:text-blue-700">Cadastre-se</a>
+                </div>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="flex h-screen overflow-hidden bg-gray-50">
+            {/* Modal de Login */}
+            {showLoginModal && <LoginModal />}
+
+            {/* Left Sidebar */}
+            <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden`}>
+                {/* Logo */}
+                <div className="p-4 flex items-center h-16">
+                    <div className="text-blue-600 font-bold text-xl">ERGO.AI</div>
+                </div>
+
+                {/* Create Quote Button */}
+                <div className="px-4 mb-6">
+                    <button
+                        onClick={handleNewQuote}
+                        className="bg-indigo-600 text-white rounded-lg py-2.5 px-4 w-full flex items-center justify-center hover:bg-indigo-700 transition-colors"
+                    >
+                        <Plus size={18} className="mr-2" />
+                        <span>Criar Nova Cotação</span>
+                    </button>
+                </div>
+
+                {/* Previous Quotes */}
+                <div className="px-4 flex-1 overflow-y-auto">
+                    <div className="font-semibold text-gray-900 mb-4">previousQuotes</div>
+                    <MockPreviousQuotes />
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Header */}
+                <header className="h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between shadow-sm">
+                    {/* Left side with menu toggle and optional logo */}
+                    <div className="flex items-center">
+                        <button
+                            className="text-gray-500 hover:bg-gray-100 p-2 rounded-md"
+                            onClick={toggleSidebar}
+                        >
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+
+                        {/* Show logo when sidebar is closed */}
+                        {!sidebarOpen && (
+                            <div className="text-blue-600 font-bold text-xl ml-2">ERGO.AI</div>
+                        )}
+                    </div>
+
+                    {/* Search bar */}
+                    <div className="relative flex-grow max-w-xl mx-4">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search size={16} className="text-gray-400" />
+                            </div>
+                            <input
+                                type="text"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                                placeholder="Buscar Cotações de Garantias"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Right side actions */}
+                    <div className="flex items-center space-x-4">
+                        <button className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+                            <Settings size={18} />
+                        </button>
+
+                        <LanguageSelector />
+
+                        <div className="flex items-center">
+                            <div className="w-8 h-8 rounded-full bg-indigo-700 text-white flex items-center justify-center">
+                                M
+                            </div>
+                            <div className="ml-2 hidden md:block">
+                                <div className="text-sm font-medium">Convidado</div>
+                                <div className="text-xs text-gray-500">Usuário Web</div>
+                            </div>
+                            <ChevronDown size={14} className="ml-1 text-gray-400" />
+                        </div>
+                    </div>
+                </header>
+
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-auto p-6">
+                    <div className="mb-6 flex items-center justify-between">
+                        <h1 className="text-xl font-semibold text-gray-900">SIMULADO GARANTIA</h1>
+                        <div className="flex items-center">
+                            <button className="text-gray-500 p-2 hover:bg-gray-100 rounded-full">
+                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Main content container */}
+                    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden h-[calc(100vh-180px)]">
+                        {/* Quote content based on stage */}
+                        {quoteStage === 'upload' && <UploadStage />}
+                        {quoteStage === 'confirm' && <ConfirmStage />}
+                        {quoteStage === 'result' && <ResultStage />}
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+};
+
+export default ErgoSingleHome;

@@ -1,0 +1,52 @@
+{
+  "welcome": "Bienvenido a la Interfaz Ergo AI",
+  "description": "Esta es una aplicación Next.js simple con soporte i18n.",
+
+  "crie_sua_conta": "Crea tu cuenta",
+  "ja_e_cliente": "¿Ya eres cliente?",
+  "faca_login": "Iniciar sesión",
+
+  "revisar_cadastro": "Revisar registro",
+  "finalizar_cadastro": "Completar registro",
+
+  "pais": "País",
+  "nome_empresa": "Nombre de la Empresa",
+  "nome_completo": "Nombre Completo",
+  "cnpj_tomador": "CNPJ - Tomador",
+  "ein_tax_id": "EIN - ID Fiscal",
+  "perfil_usuario": "Perfil de Usuario",
+  "email_profissional": "Correo Profesional",
+  "celular_whatsapp": "Móvil/WhatsApp",
+
+  "continuar": "Continuar",
+  "cancelar": "Cancelar",
+  "voltar": "Volver",
+  "finalizar": "Finalizar",
+
+  "revise_ou_edite_as_informacoes": "Revise o edite la información",
+  "informacoes_pessoais": "Información Personal",
+  "informacoes_da_empresa": "Información de la Empresa",
+  "nome": "Nombre",
+  "email": "Correo",
+  "telefone": "Teléfono",
+  "razao_social": "Razón Social",
+
+  "modalidades": "Modalidades",
+  "select_a_modality": "Seleccione una modalidad",
+  "error_loading_modalities": "Error al cargar modalidades",
+
+  "coberturas": "Coberturas",
+  "select_a_coverage": "Seleccione una cobertura",
+  "select_a_modality_first": "Seleccione una modalidad primero",
+  "inicio_vigencia": "Fecha de Inicio",
+  "dias": "Día(s)",
+  "final_vigencia": "Fecha de Finalización",
+  "valor_garantia": "Valor de Garantía",
+  "moeda": "Moneda",
+  "abrir_conta": "Abrir Cuenta",
+  "resumo_do_pedido": "Resumen del Pedido",
+  "modalidade": "Modalidad",
+  "cobertura": "Cobertura",
+  "n_dias_cobertura": "N. Día(s) de Cobertura",
+  "premio_total": "Prima Total"
+}

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false,  // Alterado de true para false
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ergo-ai/hooks": ["hooks/src"],
+      "@ergo-ai/hooks/*": ["hooks/src/*"],
+      "@ergo-ai/ui": ["ui/src"],
+      "@ergo-ai/ui/*": ["ui/src/*"],
+      "@ergo-ai/i18n": ["i18n/src"],
+      "@ergo-ai/i18n/*": ["i18n/src/*"],
+      "@ergo-ai/api-client": ["api-client/src"],
+      "@ergo-ai/api-client/*": ["api-client/src/*"],
+      "@ergo-ai/features": ["features/src"],
+      "@ergo-ai/features/*": ["features/src/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

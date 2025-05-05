@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@ergo-ai/*": ["../*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "references": [
+    { "path": "../i18n" }
+  ]
+}
