@@ -58,5 +58,10 @@
   "new_quote": "Nova Cotação",
   "print_quote": "Imprimir Cotação",
   "guarantee_purpose": "Objeto da Fiança / Purpose of Guarantee",
-  "bail_letter_number": "Carta fiança Nº / Bail Letter Nº"
+  "bail_letter_number": "Carta fiança Nº / Bail Letter Nº",
+
+  "create_new_quote": "Criar Nova Cotação",
+  "previous_quotes": "Cotações Anteriores",
+  "quote_guarantee_simulation": "SIMULADO GARANTIA",
+  "configure": "Configurar"
 }

@@ -58,5 +58,10 @@
   "new_quote": "Nueva Cotización",
   "print_quote": "Imprimir Cotización",
   "guarantee_purpose": "Objeto de la Fianza",
-  "bail_letter_number": "Carta de Fianza Nº"
+  "bail_letter_number": "Carta de Fianza Nº",
+
+  "create_new_quote": "Crear Nueva Cotización",
+  "previous_quotes": "Cotizaciones Anteriores",
+  "quote_guarantee_simulation": "SIMULACIÓN DE GARANTÍA",
+  "configure": "Configurar"
 }

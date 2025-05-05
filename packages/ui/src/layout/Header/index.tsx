@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 
 interface HeaderProps {
     isSidebarOpen: boolean;
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
                                                   SearchIntegration,
                                                   logoText = "ERGO.AI"
                                               }) => {
+    const { t } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -50,7 +52,10 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Right side actions */}
             <div className="flex items-center space-x-4">
-                <button className="text-gray-500 hover:bg-gray-100 p-2 rounded-full">
+                <button
+                    className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
+                    title={t('configure')}
+                >
                     {isMounted ? (
                         <Settings size={18} />
                     ) : (

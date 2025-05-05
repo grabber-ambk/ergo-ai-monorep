@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -26,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                     onSelectQuote,
                                                     PreviousQuotes
                                                 }) => {
+    const { t } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
 
     // Efeito para definir isMounted como true após a montagem do componente
@@ -52,13 +54,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     ) : (
                         <div className="w-[18px] h-[18px] mr-2"></div>
                     )}
-                    <span>Criar Nova Cotação</span>
+                    <span>{t('create_new_quote')}</span>
                 </button>
             </div>
 
             {/* Previous Quotes */}
             <div className="px-4 flex-1 overflow-y-auto">
-                <div className="font-semibold text-gray-900 mb-4">Cotações Anteriores</div>
+                <div className="font-semibold text-gray-900 mb-4">{t('previous_quotes')}</div>
                 <PreviousQuotes
                     quotes={quotes}
                     onSelectQuote={onSelectQuote}

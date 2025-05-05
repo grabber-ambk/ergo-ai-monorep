@@ -58,5 +58,10 @@
   "new_quote": "New Quote",
   "print_quote": "Print Quote",
   "guarantee_purpose": "Purpose of Guarantee",
-  "bail_letter_number": "Bail Letter No."
+  "bail_letter_number": "Bail Letter No.",
+
+  "create_new_quote": "Create New Quote",
+  "previous_quotes": "Previous Quotes",
+  "quote_guarantee_simulation": "GUARANTEE SIMULATION",
+  "configure": "Configure"
 }

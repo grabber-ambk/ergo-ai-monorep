@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 
 interface MainLayoutProps {
     header: React.ReactNode;
@@ -8,11 +9,14 @@ interface MainLayoutProps {
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
-    header,
-    sidebar,
-    children,
-    pageTitle = "SIMULADO GARANTIA"
-}) => {
+                                                          header,
+                                                          sidebar,
+                                                          children,
+                                                          pageTitle
+                                                      }) => {
+    const { t } = useTranslation();
+    const title = pageTitle || t('quote_guarantee_simulation');
+
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50">
             {/* Sidebar */}
@@ -26,7 +30,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 {/* Main Content Area */}
                 <main className="flex-1 overflow-auto p-6">
                     <div className="mb-6 flex items-center justify-between">
-                        <h1 className="text-xl font-semibold text-gray-900">{pageTitle}</h1>
+                        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
                         <div className="flex items-center">
                             <button className="text-gray-500 p-2 hover:bg-gray-100 rounded-full">
                                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,6 +1,7 @@
 // SignupModal.tsx
 import React, { useState } from 'react';
 import { Info, X } from 'lucide-react';
+import { useTranslation } from "@ergo-ai/i18n/src/client";
 
 interface SignupModalProps {
     isOpen: boolean;
@@ -27,6 +28,8 @@ const SignupModal: React.FC<SignupModalProps> = ({
                                                      onSignupFormChange,
                                                      onSignupSubmit
                                                  }) => {
+    const { t } = useTranslation();
+
     if (!isOpen) return null;
 
     return (
@@ -43,7 +46,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                     <X size={20} />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-6">Crie sua conta</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('create_account')}</h2>
 
                 {/* Info box for existing users */}
                 <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start">
@@ -51,8 +54,8 @@ const SignupModal: React.FC<SignupModalProps> = ({
                         <Info size={20} className="text-blue-500" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-medium">Já é cliente?</h3>
-                        <a href="#" className="text-blue-500 hover:text-blue-600">Faça login</a>
+                        <h3 className="text-lg font-medium">{t('already_customer')}</h3>
+                        <a href="#" className="text-blue-500 hover:text-blue-600">{t('login')}</a>
                     </div>
                 </div>
 
@@ -60,7 +63,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                     {/* Country Selection */}
                     <div className="mb-4">
                         <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                            País
+                            {t('country')}
                         </label>
                         <select
                             id="country"
@@ -82,7 +85,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                     {/* Company Name */}
                     <div className="mb-4">
                         <label className="block bg-gray-800 text-white p-3 font-medium rounded-t-lg">
-                            Nome Empresa
+                            {t('company_name')}
                         </label>
                         <input
                             type="text"
@@ -102,14 +105,14 @@ const SignupModal: React.FC<SignupModalProps> = ({
                             value={signupFormData.fullName}
                             onChange={onSignupFormChange}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="Nome Completo"
+                            placeholder={t('full_name')}
                         />
                     </div>
 
                     {/* Tax ID */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {selectedCountry === 'BR' ? 'CNPJ - Tomador' : 'EIN - Tax ID'}
+                            {selectedCountry === 'BR' ? t('policyholder_tax_id') : t('tax_id')}
                         </label>
                         <input
                             type="text"
@@ -124,7 +127,7 @@ const SignupModal: React.FC<SignupModalProps> = ({
                     {/* User Profile Section */}
                     <div className="mb-4">
                         <label className="block bg-gray-800 text-white p-3 font-medium rounded-t-lg">
-                            Perfil Usuário
+                            {t('user_profile')}
                         </label>
                     </div>
 
@@ -136,14 +139,14 @@ const SignupModal: React.FC<SignupModalProps> = ({
                             value={signupFormData.email}
                             onChange={onSignupFormChange}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="Email Profissional"
+                            placeholder={t('professional_email')}
                         />
                     </div>
 
                     {/* Phone */}
                     <div className="mb-6">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Celular/WhatsApp
+                            {t('mobile_whatsapp')}
                         </label>
                         <input
                             type="text"
@@ -162,13 +165,13 @@ const SignupModal: React.FC<SignupModalProps> = ({
                             onClick={onClose}
                             className="px-6 py-3 text-red-500 hover:text-red-600 font-medium"
                         >
-                            Cancelar
+                            {t('cancel')}
                         </button>
                         <button
                             type="submit"
                             className="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800"
                         >
-                            Continuar
+                            {t('continue')}
                         </button>
                     </div>
                 </form>

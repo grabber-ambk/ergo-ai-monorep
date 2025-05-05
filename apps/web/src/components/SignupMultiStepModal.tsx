@@ -83,7 +83,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                         : 'bg-blue-500 text-white'}`}>
                         {currentStep === 'form' ? '1' : <Check size={16} />}
                     </div>
-                    <span className="text-sm mt-2 text-gray-600">{t('revisar_cadastro')}</span>
+                    <span className="text-sm mt-2 text-gray-600">{t('review_registration')}</span>
                 </div>
 
                 {/* Etapa 2 */}
@@ -94,7 +94,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                         : 'bg-gray-300 text-gray-500'}`}>
                         2
                     </div>
-                    <span className="text-sm mt-2 text-gray-600">{t('finalizar_cadastro')}</span>
+                    <span className="text-sm mt-2 text-gray-600">{t('complete_registration')}</span>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
             {/* Country Selection */}
             <div className="mb-4">
                 <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('pais')}
+                    {t('country')}
                 </label>
                 <select
                     id="country"
@@ -128,7 +128,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
             {/* Company Name */}
             <div className="mb-4">
                 <label className="block bg-gray-800 text-white p-3 font-medium rounded-t-lg">
-                    {t('nome_empresa')}
+                    {t('company_name')}
                 </label>
                 <input
                     type="text"
@@ -149,7 +149,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                     value={signupFormData.fullName}
                     onChange={onSignupFormChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder={t('nome_completo')}
+                    placeholder={t('full_name')}
                     required
                 />
             </div>
@@ -157,7 +157,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
             {/* Tax ID */}
             <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {selectedCountry === 'BR' ? t('cnpj_tomador') : t('ein_tax_id')}
+                    {selectedCountry === 'BR' ? t('policyholder_tax_id') : t('tax_id')}
                 </label>
                 <input
                     type="text"
@@ -173,7 +173,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
             {/* User Profile Section */}
             <div className="mb-4">
                 <label className="block bg-gray-800 text-white p-3 font-medium rounded-t-lg">
-                    {t('perfil_usuario')}
+                    {t('user_profile')}
                 </label>
             </div>
 
@@ -185,7 +185,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                     value={signupFormData.email}
                     onChange={onSignupFormChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder={t('email_profissional')}
+                    placeholder={t('professional_email')}
                     required
                 />
             </div>
@@ -193,7 +193,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
             {/* Phone */}
             <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('celular_whatsapp')}
+                    {t('mobile_whatsapp')}
                 </label>
                 <input
                     type="text"
@@ -213,13 +213,13 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                     onClick={onClose}
                     className="px-6 py-3 text-red-500 hover:text-red-600 font-medium"
                 >
-                    {t('cancelar')}
+                    {t('cancel')}
                 </button>
                 <button
                     type="submit"
                     className="px-6 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800"
                 >
-                    {t('continuar')}
+                    {t('continue')}
                 </button>
             </div>
         </form>
@@ -228,16 +228,16 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
     // Etapa 2: Revisão
     const ReviewStep = () => (
         <div className="w-full">
-            <h3 className="text-lg font-medium mb-4">{t('revise_ou_edite_as_informacoes')}</h3>
+            <h3 className="text-lg font-medium mb-4">{t('review_edit_information')}</h3>
 
             <div className="space-y-6">
                 {/* Informações Pessoais */}
                 <div>
-                    <h4 className="font-medium text-gray-800 mb-3">{t('informacoes_pessoais')}</h4>
+                    <h4 className="font-medium text-gray-800 mb-3">{t('personal_information')}</h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                         <div>
-                            <p className="text-sm text-gray-500">{t('nome')}:</p>
+                            <p className="text-sm text-gray-500">{t('name')}:</p>
                             <p className="font-medium">{signupFormData.fullName}</p>
                         </div>
 
@@ -247,7 +247,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                         </div>
 
                         <div>
-                            <p className="text-sm text-gray-500">{t('telefone')}:</p>
+                            <p className="text-sm text-gray-500">{t('phone')}:</p>
                             <p className="font-medium">{formatPhoneForDisplay(signupFormData.phone)}</p>
                         </div>
                     </div>
@@ -255,7 +255,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
 
                 {/* Informações da Empresa */}
                 <div>
-                    <h4 className="font-medium text-gray-800 mb-3">{t('informacoes_da_empresa')}</h4>
+                    <h4 className="font-medium text-gray-800 mb-3">{t('company_information')}</h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                         <div>
@@ -264,12 +264,12 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                         </div>
 
                         <div>
-                            <p className="text-sm text-gray-500">{t('razao_social')}:</p>
+                            <p className="text-sm text-gray-500">{t('legal_name')}:</p>
                             <p className="font-medium">{signupFormData.companyName}</p>
                         </div>
 
                         <div>
-                            <p className="text-sm text-gray-500">{t('pais')}:</p>
+                            <p className="text-sm text-gray-500">{t('country')}:</p>
                             <p className="font-medium">
                                 {selectedCountry === 'BR' ? 'Brasil' :
                                     selectedCountry === 'US' ? 'Estados Unidos' :
@@ -292,7 +292,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                     onClick={handlePreviousStep}
                     className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
                 >
-                    {t('voltar')}
+                    {t('back')}
                 </button>
 
                 <div className="flex gap-4">
@@ -301,14 +301,14 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                         onClick={onClose}
                         className="px-6 py-3 text-red-500 hover:text-red-600 font-medium"
                     >
-                        {t('cancelar')}
+                        {t('cancel')}
                     </button>
                     <button
                         type="button"
                         onClick={handleNextStep}
                         className="px-8 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800"
                     >
-                        {t('finalizar')}
+                        {t('finish')}
                     </button>
                 </div>
             </div>
@@ -332,7 +332,7 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                     <X size={20} />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-4">{t('crie_sua_conta')}</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('create_account')}</h2>
 
                 {/* Info box para usuários existentes */}
                 {currentStep === 'form' && (
@@ -341,8 +341,8 @@ const SignupMultiStepModal: React.FC<SignupMultiStepModalProps> = ({
                             <Info size={20} className="text-blue-500" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-medium">{t('ja_e_cliente')}</h3>
-                            <a href="#" className="text-blue-500 hover:text-blue-600">{t('faca_login')}</a>
+                            <h3 className="text-lg font-medium">{t('already_customer')}</h3>
+                            <a href="#" className="text-blue-500 hover:text-blue-600">{t('login')}</a>
                         </div>
                     </div>
                 )}
