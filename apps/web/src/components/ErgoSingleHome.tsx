@@ -132,7 +132,16 @@ const ErgoSingleHome = () => {
 
                 {quoteStage === 'confirm' && (
                     <QuoteConfirm
-                        quoteData={quoteData}
+                        quoteData={{
+                            ...quoteData,
+                            company: {
+                                name: "ERGO ASSURANCE",
+                                address: "Av Engenheiro Luiz Carlos Berrini, 550 andar 4, São Paulo - SP, 04571-000",
+                                registerNumber: "04884166000179",
+                                logoUrl: "/images/ergo-logo.png" // Certifique-se de que o logotipo existe neste caminho
+                            },
+                            reference: "GOM231036124"
+                        }}
                         handleNewQuote={handleNewQuote}
                         handleConfirmQuote={handleConfirmQuote}
                     />
@@ -140,7 +149,16 @@ const ErgoSingleHome = () => {
 
                 {quoteStage === 'result' && (
                     <QuoteResult
-                        quoteData={quoteData}
+                        quoteData={{
+                            ...quoteData,
+                            company: {
+                                name: "ERGO ASSURANCE",
+                                address: "Av Engenheiro Luiz Carlos Berrini, 550 andar 4, São Paulo - SP, 04571-000",
+                                registerNumber: "04884166000179",
+                                logoUrl: "/images/ergo-logo.png" // Certifique-se de que o logotipo existe neste caminho
+                            },
+                            reference: "GOM231036124"
+                        }}
                         handleNewQuote={handleNewQuote}
                         handleOpenSignupModal={handleOpenSignupModal}
                     />

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload } from 'lucide-react';
 import AdvancedTabUpdated from './AdvancedTabUpdated';
 import { useTranslation } from "@ergo-ai/i18n/src/client";
@@ -49,22 +49,52 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                                                             fileUploaded,
                                                             uploadedFilename,
                                                             fileSize,
-                                                            advancedFormData = defaultAdvancedFormData, // Valores padrão para evitar undefined
+                                                            advancedFormData = defaultAdvancedFormData,
                                                             handleAdvancedFormChange,
                                                             handleFileSelected,
                                                             handleGenerateQuote,
                                                             handleGenerateAdvancedQuote,
                                                         }) => {
-    const { t } = useTranslation(); // Hook de tradução
+    const { t } = useTranslation();
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Mapeamento de textos para internacionalização
-    const i18n = {
-        simples: "SIMPLES",
-        avancado: "AVANÇADO",
-        arrasteESolte: "Arraste e solte seu arquivo aqui ou",
-        browse: "browse",
-        pdfMaxSize: ".PDF (max. 10MB)",
-        gerarCotacao: "Gerar Cotação"
+    // Manipuladores para o drag and drop
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            // Criar um evento sintético para passar ao manipulador existente
+            const fileList = e.dataTransfer.files;
+            const event = {
+                target: {
+                    files: fileList
+                }
+            } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+            handleFileSelected(event);
+        }
+    };
+
+    // Função para acionar o input de arquivo via botão
+    const triggerFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
     };
 
     return (
@@ -79,7 +109,7 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                     }`}
                     onClick={() => handleTabChange('simple')}
                 >
-                    {i18n.simples}
+                    {t('simple')}
                 </button>
                 <button
                     className={`py-4 px-6 font-medium text-sm ${
@@ -89,7 +119,7 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                     }`}
                     onClick={() => handleTabChange('advanced')}
                 >
-                    {i18n.avancado}
+                    {t('advanced')}
                 </button>
             </div>
 
@@ -98,6 +128,11 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                 {activeTab === 'simple' ? (
                     /* Simple tab - File upload */
                     <div className="flex flex-col items-center justify-center h-[calc(100vh-300px)]">
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-semibold mb-2">{t('upload_contract_title')}</h2>
+                            <p className="text-gray-600 max-w-2xl mx-auto">{t('upload_contract_description')}</p>
+                        </div>
+
                         <div className="w-full max-w-md">
                             {fileUploaded ? (
                                 /* Arquivo carregado */
@@ -117,25 +152,35 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                                         onClick={handleGenerateQuote}
                                         className="w-full bg-blue-600 text-white rounded-lg py-2.5 px-4 hover:bg-blue-700 transition-colors"
                                     >
-                                        {i18n.gerarCotacao}
+                                        {t('generate_quote')}
                                     </button>
                                 </div>
                             ) : (
-                                /* Área de upload */
-                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center bg-white">
+                                /* Área de upload com drag and drop */
+                                <div
+                                    className={`border-2 ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-dashed border-gray-300 bg-white'} rounded-lg p-12 text-center transition-colors`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={handleDrop}
+                                >
                                     <div className="mx-auto h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-4">
                                         <Upload size={24} />
                                     </div>
-                                    <p className="mb-2 text-sm text-gray-700">{i18n.arrasteESolte}</p>
-                                    <label className="inline-block cursor-pointer text-blue-600 hover:text-blue-800">
-                                        <span className="text-sm">{i18n.browse}</span>
-                                        <input
-                                            type="file"
-                                            className="hidden"
-                                            onChange={handleFileSelected}
-                                        />
-                                    </label>
-                                    <p className="mt-1 text-xs text-gray-500">{i18n.pdfMaxSize}</p>
+                                    <p className="mb-2 text-sm text-gray-700">{t('drag_drop_contract')}</p>
+                                    <button
+                                        onClick={triggerFileInput}
+                                        className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                                    >
+                                        {t('browse')}
+                                    </button>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleFileSelected}
+                                        accept=".pdf,.doc,.docx"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">{t('pdf_max_size')}</p>
                                 </div>
                             )}
                         </div>

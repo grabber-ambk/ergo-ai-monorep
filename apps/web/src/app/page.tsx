@@ -1,10 +1,12 @@
 // src/app/page.tsx
 import { redirect } from 'next/navigation';
-import { defaultLocale } from "@ergo-ai/i18n/src/settings";
+//import { defaultLocale } from "@ergo-ai/i18n/src/settings";
+import { getSimplifiedLocale, defaultLocale } from "@ergo-ai/i18n/src/settings";
 
 
 export default function Home() {
-    redirect(`/${defaultLocale}`);
+    //redirect(`/${defaultLocale}`);
+    redirect(`/${getSimplifiedLocale(defaultLocale)}`);
 }
 
 /*

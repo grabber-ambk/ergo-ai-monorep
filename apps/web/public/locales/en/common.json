@@ -63,5 +63,22 @@
   "create_new_quote": "Create New Quote",
   "previous_quotes": "Previous Quotes",
   "quote_guarantee_simulation": "GUARANTEE SIMULATION",
-  "configure": "Configure"
+  "configure": "Configure",
+
+  "upload_contract_title": "Upload your Contract, It's that Simple.",
+  "upload_contract_description": "Our Artificial Intelligence will analyze your contract and automatically create a Surety Bond quote for your contract",
+  "drag_drop_contract": "Drag and drop your Contract file .pdf or .doc here",
+  "browse": "browse",
+  "pdf_max_size": "PDF (max. 10MB)",
+  "generate_quote": "Generate Quote",
+  "simple": "SIMPLE",
+  "advanced": "ADVANCED",
+
+  "company_register": "Company Register",
+  "proposal": "PROPOSAL",
+
+  "hide_contract_upload": "Hide Contract Upload",
+  "load_contract": "Load Contract",
+
+  "select_a_modality": "Select a modality"
 }

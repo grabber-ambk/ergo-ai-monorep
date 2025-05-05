@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
     productionBrowserSourceMaps: true,
     experimental: {
-        serverActions: true,
-        serverComponents: true
+        serverActions: {
+            // Você pode adicionar opções de configuração aqui se necessário
+            allowedOrigins: ['localhost:3000'],
+            bodySizeLimit: '2mb'
+        }
     },
     transpilePackages: [
         '@ergo-ai/hooks',

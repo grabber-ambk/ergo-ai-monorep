@@ -5,8 +5,37 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, Plus, Printer } from 'lucide-react';
 import { useTranslation } from '@ergo-ai/i18n/src/client';
 
+interface CompanyInfo {
+    name: string;
+    address: string;
+    registerNumber: string;
+    logoUrl: string;
+}
+
 interface QuoteResultProps {
-    quoteData: any;
+    quoteData: {
+        guarantee: {
+            type: string;
+            coverage: string;
+            value: number;
+            startDate: string;
+            endDate: string;
+            days: number;
+            purpose: string;
+            reference: string;
+        };
+        borrower: {
+            name: string;
+            taxId: string;
+        };
+        beneficiary: {
+            name: string;
+            taxId: string;
+        };
+        premium: number;
+        company?: CompanyInfo;
+        reference?: string;
+    };
     handleNewQuote: () => void;
     handleOpenSignupModal: () => void;
 }
@@ -25,9 +54,17 @@ const QuoteResult: React.FC<QuoteResultProps> = ({
 
     if (!quoteData) return null;
 
+    const formatCurrency = (value: number) => {
+        return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).replace('.', ',');
+    };
+
     return (
         <div className="flex flex-col items-center h-[calc(100vh-180px)] overflow-y-auto py-4 px-4">
             <div className="w-full max-w-4xl">
+                {/* Buttons row - keep existing */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">{t('surety_bond_quote')}</h1>
 
@@ -42,6 +79,7 @@ const QuoteResult: React.FC<QuoteResultProps> = ({
 
                         <button
                             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md"
+                            onClick={() => window.print()}
                         >
                             {isMounted ? <Printer size={18} /> : <div className="w-[18px] h-[18px]"></div>}
                             {t('print_quote')}
@@ -50,6 +88,35 @@ const QuoteResult: React.FC<QuoteResultProps> = ({
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                    {/* Company Header with Logo */}
+                    {quoteData.company && (
+                        <div className="border-b border-gray-200 pb-6 mb-6">
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center">
+                                    {quoteData.company.logoUrl && (
+                                        <img
+                                            src={quoteData.company.logoUrl}
+                                            alt={quoteData.company.name}
+                                            className="h-14 mr-4"
+                                        />
+                                    )}
+                                    <div>
+                                        <h2 className="font-bold text-gray-800">{quoteData.company.name}</h2>
+                                        <p className="text-sm text-gray-600">{quoteData.company.address}</p>
+                                        <p className="text-sm text-gray-600">{t('company_register')} № {quoteData.company.registerNumber}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <h1 className="text-2xl font-bold text-gray-800">{t('proposal')}</h1>
+                                    {quoteData.reference && (
+                                        <p className="text-sm text-gray-500">#{quoteData.reference}</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Order Summary - existing content */}
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
                         {isMounted ? <CheckCircle size={24} className="text-green-500" /> : <div className="w-[24px] h-[24px]"></div>}
                         <h2 className="text-2xl font-bold text-gray-800">{t('order_summary')}</h2>
@@ -70,10 +137,7 @@ const QuoteResult: React.FC<QuoteResultProps> = ({
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-gray-700 text-base">{t('guarantee_value')}:</span>
                                 <span className="font-semibold text-right">
-                                    R$ {quoteData.guarantee.value.toLocaleString('pt-BR', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }).replace('.', ',')}
+                                    R$ {formatCurrency(quoteData.guarantee.value)}
                                 </span>
                             </div>
 
@@ -95,10 +159,7 @@ const QuoteResult: React.FC<QuoteResultProps> = ({
                             <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                                 <span className="text-gray-700 text-base font-medium">{t('total_premium')}:</span>
                                 <span className="font-bold text-lg text-blue-600">
-                                    R$ {quoteData.premium.toLocaleString('pt-BR', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }).replace('.', ',')}
+                                    R$ {formatCurrency(quoteData.premium)}
                                 </span>
                             </div>
                         </div>

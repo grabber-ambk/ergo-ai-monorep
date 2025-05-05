@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronDown, Upload, X } from 'lucide-react';
 import { useTranslation } from "@ergo-ai/i18n/src/client";
 import ModalitySelection from "@/components/ModalitySelection";
 import CoverageSelection from "@/components/CoverageSelection";
@@ -48,6 +48,15 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
   const { t } = useTranslation(); // Hook de tradução
   const [showSummary, setShowSummary] = useState(false);
   const [localFormData, setLocalFormData] = useState(formData);
+
+  // Estados para o upload de contrato
+  const [showContractUpload, setShowContractUpload] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [uploadedFilename, setUploadedFilename] = useState('');
+  const [fileSize, setFileSize] = useState('');
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Mostrar resumo automaticamente assim que qualquer campo for interagido
   useEffect(() => {
@@ -358,6 +367,68 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
     }));
   };
 
+  // Funções para o upload de contrato
+  const toggleContractUpload = () => {
+    setShowContractUpload(!showContractUpload);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileSelected(e.target.files[0]);
+    }
+  };
+
+  const handleFileSelected = (file: File) => {
+    // Formatar o tamanho do arquivo
+    const fileSizeKB = Math.round(file.size / 1024);
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    const formattedSize = fileSizeKB < 1000 ? `${fileSizeKB} KB` : `${fileSizeMB} MB`;
+
+    setUploadedFilename(file.name);
+    setFileSize(formattedSize);
+    setFileUploaded(true);
+
+    // Você pode processar o arquivo aqui ou enviá-lo para API
+    console.log('Arquivo selecionado:', file);
+  };
+
+  const removeUploadedFile = () => {
+    setFileUploaded(false);
+    setUploadedFilename('');
+    setFileSize('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   // Dados de resumo calculados com base nos valores do formulário
   const summary = {
     modalidade: localFormData.modalidade,
@@ -381,103 +452,168 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
         {/* Formulário */}
         <div className={`${showSummary ? "w-1/2" : "w-full"} transition-all duration-300`}>
           <div className="bg-white p-6 rounded-lg border border-gray-200">
-            {/* Modalidades dropdown */}
-            <ModalitySelection
-                value={localFormData.modalidade}
-                onChange={handleModalityChange}
-            />
+            {/* Link para carregar contrato */}
+            <div className="mb-4 flex flex-col">
+              <div
+                  className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer flex items-center mb-2"
+                  onClick={toggleContractUpload}
+              >
+                <Upload size={16} className="mr-1" />
+                <span>{showContractUpload ? t('hide_contract_upload') : t('load_contract')}</span>
+              </div>
 
-            {/* Coberturas dropdown */}
-            <CoverageSelection
-                modalityId={localFormData.modalidade}
-                value={localFormData.cobertura || ""}
-                onChange={handleCoverageChange}
-            />
+              {/* Área de upload de contrato (condicional) */}
+              {showContractUpload && (
+                  <div className="border border-gray-200 rounded-lg bg-gray-50 p-4 mb-4">
+                    {fileUploaded ? (
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium">{uploadedFilename}</div>
+                              <div className="text-xs text-gray-500">{fileSize}</div>
+                            </div>
+                          </div>
+                          <button
+                              onClick={removeUploadedFile}
+                              className="text-gray-500 hover:text-gray-700"
+                              aria-label="Remover arquivo"
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                    ) : (
+                        <div
+                            className={`border-2 ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-dashed border-gray-300'} rounded-lg p-6 text-center transition-colors`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                        >
+                          <div className="mx-auto h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-3">
+                            <Upload size={20} />
+                          </div>
+                          <p className="mb-2 text-sm text-gray-700">{t('drag_drop_contract')}</p>
+                          <button
+                              onClick={triggerFileInput}
+                              className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                          >
+                            {t('browse')}
+                          </button>
+                          <input
+                              ref={fileInputRef}
+                              type="file"
+                              className="hidden"
+                              onChange={handleFileInputChange}
+                              accept=".pdf,.doc,.docx"
+                          />
+                          <p className="mt-1 text-xs text-gray-500">{t('pdf_max_size')}</p>
+                        </div>
+                    )}
+                  </div>
+              )}
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              {/* Início Vigência */}
-              <DatePicker
-                  name="startDate"
-                  value={localFormData.startDate}
-                  onChange={handleStartDateChange}
-                  label={t('start_date')}
+              {/* Modalidades dropdown */}
+              <ModalitySelection
+                  value={localFormData.modalidade}
+                  onChange={handleModalityChange}
               />
 
-              {/* Dia(s) */}
-              <div>
-                <label className="block text-sm text-gray-500 mb-1">
-                  {t('days')}
-                </label>
-                <div className="relative">
+              {/* Coberturas dropdown */}
+              <CoverageSelection
+                  modalityId={localFormData.modalidade}
+                  value={localFormData.cobertura || ""}
+                  onChange={handleCoverageChange}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                {/* Início Vigência */}
+                <DatePicker
+                    name="startDate"
+                    value={localFormData.startDate}
+                    onChange={handleStartDateChange}
+                    label={t('start_date')}
+                />
+
+                {/* Dia(s) */}
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">
+                    {t('days')}
+                  </label>
+                  <div className="relative">
+                    <input
+                        type="text"
+                        name="days"
+                        value={localFormData.days}
+                        onChange={handleDaysChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Final Vigência */}
+                <DatePicker
+                    name="endDate"
+                    value={localFormData.endDate}
+                    onChange={handleEndDateChange}
+                    label={t('end_date')}
+                />
+
+                {/* Valor Garantia */}
+                <div>
+                  <label className="block text-sm text-gray-500 mb-1">
+                    {t('guarantee_value')}
+                  </label>
                   <input
                       type="text"
-                      name="days"
-                      value={localFormData.days}
-                      onChange={handleDaysChange}
+                      name="guaranteeValue"
+                      value={localFormData.guaranteeValue}
+                      onChange={handleGuaranteeValueChange}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
 
-              {/* Final Vigência */}
-              <DatePicker
-                  name="endDate"
-                  value={localFormData.endDate}
-                  onChange={handleEndDateChange}
-                  label={t('end_date')}
-              />
-
-              {/* Valor Garantia */}
-              <div>
+              {/* Moeda */}
+              <div className="mb-6">
                 <label className="block text-sm text-gray-500 mb-1">
-                  {t('guarantee_value')}
+                  {t('currency')}
                 </label>
-                <input
-                    type="text"
-                    name="guaranteeValue"
-                    value={localFormData.guaranteeValue}
-                    onChange={handleGuaranteeValueChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-            </div>
-
-            {/* Moeda */}
-            <div className="mb-6">
-              <label className="block text-sm text-gray-500 mb-1">
-                {t('currency')}
-              </label>
-              <div className="relative w-40">
-                <select
-                    name="currency"
-                    value={localFormData.currency}
-                    onChange={handleFormChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
-                >
-                  <option value="BRL">BRL</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                </select>
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <ChevronDown size={18} />
+                <div className="relative w-40">
+                  <select
+                      name="currency"
+                      value={localFormData.currency}
+                      onChange={handleFormChange}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
+                  >
+                    <option value="BRL">BRL</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                  </select>
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <ChevronDown size={18} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Botões */}
-            <div className="flex justify-between mt-8">
-              <button
-                  className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
-                  onClick={onGenerateQuote}
-              >
-                {t('open_account')}
-              </button>
-              <button
-                  className="px-6 py-3 text-gray-700 hover:text-gray-900"
-                  onClick={handleCancel}
-              >
-                {t('cancel')}
-              </button>
+              {/* Botões */}
+              <div className="flex justify-between mt-8">
+                <button
+                    className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
+                    onClick={onGenerateQuote}
+                >
+                  {t('open_account')}
+                </button>
+                <button
+                    className="px-6 py-3 text-gray-700 hover:text-gray-900"
+                    onClick={handleCancel}
+                >
+                  {t('cancel')}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -523,10 +659,19 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
                 <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
                   <span className="text-gray-600">{t('total_premium')}:</span>
                   <span className="font-semibold text-blue-600">
-                    {summary.premioTotal}
-                  </span>
+                {summary.premioTotal}
+              </span>
                 </div>
               </div>
+
+              {fileUploaded && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">{t('uploaded_file')}:</span>
+                      <span className="font-semibold">{uploadedFilename}</span>
+                    </div>
+                  </div>
+              )}
             </div>
         )}
       </div>

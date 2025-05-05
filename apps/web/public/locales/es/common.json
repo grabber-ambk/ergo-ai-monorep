@@ -63,5 +63,22 @@
   "create_new_quote": "Crear Nueva Cotización",
   "previous_quotes": "Cotizaciones Anteriores",
   "quote_guarantee_simulation": "SIMULACIÓN DE GARANTÍA",
-  "configure": "Configurar"
+  "configure": "Configurar",
+
+  "upload_contract_title": "Cargue su Contrato, así de Simple.",
+  "upload_contract_description": "Nuestra Inteligencia Artificial analizará su contrato y creará automáticamente una cotización de Garantía para su contrato",
+  "drag_drop_contract": "Arrastre y suelte su archivo de Contrato .pdf o .doc aquí",
+  "browse": "seleccionar",
+  "pdf_max_size": "PDF (máx. 10MB)",
+  "generate_quote": "Generar Cotización",
+  "simple": "SIMPLE",
+  "advanced": "AVANZADO",
+
+  "company_register": "EIN",
+  "proposal": "PROPUESTA",
+
+  "hide_contract_upload": "Ocultar Carga de Contrato",
+  "load_contract": "Cargar Contrato",
+
+  "select_a_modality": "Seleccione una modalidad"
 }

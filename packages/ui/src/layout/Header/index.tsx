@@ -1,3 +1,4 @@
+// Header/index.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -10,6 +11,7 @@ interface HeaderProps {
     LanguageSelector: React.ReactNode;
     UserProfileMenu: React.ReactNode;
     SearchIntegration: React.ReactNode;
+    logoUrl?: string;
     logoText?: string;
 }
 
@@ -19,7 +21,8 @@ export const Header: React.FC<HeaderProps> = ({
                                                   LanguageSelector,
                                                   UserProfileMenu,
                                                   SearchIntegration,
-                                                  logoText = "ERGO.AI"
+                                                  logoUrl = "/images/ergo-logo.png",
+                                                  logoText = ""
                                               }) => {
     const { t } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
@@ -29,9 +32,9 @@ export const Header: React.FC<HeaderProps> = ({
     }, []);
 
     return (
-        <header className="h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between shadow-sm">
-            {/* Left side with menu toggle and optional logo */}
-            <div className="flex items-center">
+        <header className="h-16 bg-white border-b border-gray-200 px-4 flex items-center shadow-sm">
+            {/* Lado esquerdo com botão do menu e logo opcional */}
+            <div className="flex items-center min-w-[180px]">
                 <button
                     className="text-gray-500 hover:bg-gray-100 p-2 rounded-md"
                     onClick={toggleSidebar}
@@ -41,17 +44,26 @@ export const Header: React.FC<HeaderProps> = ({
                     </svg>
                 </button>
 
-                {/* Show logo when sidebar is closed */}
+                {/* Mostra o logo quando a barra lateral está fechada */}
                 {!isSidebarOpen && (
-                    <div className="text-blue-600 font-bold text-xl ml-2">{logoText}</div>
+                    <div className="flex items-center ml-2">
+                        <img
+                            src={logoUrl}
+                            alt={logoText}
+                            className="h-8 mr-2"
+                        />
+                        <span className="text-blue-600 font-bold text-xl">{logoText}</span>
+                    </div>
                 )}
             </div>
 
-            {/* Search bar */}
-            {SearchIntegration}
+            {/* Barra de busca com margem adicional */}
+            <div className="flex-1 mx-6">
+                {SearchIntegration}
+            </div>
 
-            {/* Right side actions */}
-            <div className="flex items-center space-x-4">
+            {/* Ações do lado direito */}
+            <div className="flex items-center space-x-4 flex-shrink-0">
                 <button
                     className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
                     title={t('configure')}
@@ -63,7 +75,8 @@ export const Header: React.FC<HeaderProps> = ({
                     )}
                 </button>
 
-                {LanguageSelector}
+                {/* Renderizar o LanguageSelector apenas no lado do cliente para evitar erros de hidratação */}
+                {isMounted && LanguageSelector}
                 {UserProfileMenu}
             </div>
         </header>

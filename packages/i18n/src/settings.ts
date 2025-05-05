@@ -29,3 +29,13 @@ export function getSimplifiedLocale(locale: string) {
     // Retorna 'pt' como fallback
     return 'pt';
 }
+
+export function getBrowserLanguage(): string {
+    if (typeof window === 'undefined') return getSimplifiedLocale(defaultLocale);
+
+    // Obter o idioma do navegador
+    const browserLang = navigator.language || (navigator as any).userLanguage;
+
+    // Retornar o locale simplificado
+    return getSimplifiedLocale(browserLang);
+}

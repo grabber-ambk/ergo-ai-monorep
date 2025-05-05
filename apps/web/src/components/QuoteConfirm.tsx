@@ -2,8 +2,39 @@
 import React from 'react';
 import { useTranslation } from '@ergo-ai/i18n/src/client';
 
+interface CompanyInfo {
+    name: string;
+    address: string;
+    registerNumber: string;
+    logoUrl: string;
+}
+
+interface QuoteDataExtended {
+    guarantee: {
+        type: string;
+        coverage: string;
+        value: number;
+        startDate: string;
+        endDate: string;
+        days: number;
+    };
+    borrower: {
+        name: string;
+        taxId: string;
+    };
+    beneficiary: {
+        name: string;
+        taxId: string;
+    };
+    premium: number;
+    purposeOfGuarantee?: string;
+    bailLetterNo?: string;
+    reference?: string;
+    company?: CompanyInfo;
+}
+
 interface QuoteConfirmProps {
-    quoteData: any;
+    quoteData: QuoteDataExtended;
     handleNewQuote: () => void;
     handleConfirmQuote: () => void;
 }
@@ -17,9 +48,45 @@ const QuoteConfirm: React.FC<QuoteConfirmProps> = ({
 
     if (!quoteData) return null;
 
+    const formatCurrency = (value: number) => {
+        return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).replace('.', ',');
+    };
+
     return (
         <div className="flex flex-col items-center h-[calc(100vh-180px)] overflow-y-auto py-4 px-4">
             <div className="w-full max-w-4xl bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                {/* Company Header with Logo */}
+                {quoteData.company && (
+                    <div className="border-b border-gray-200 pb-6 mb-6">
+                        <div className="flex justify-between items-start">
+                            <div className="flex items-center">
+                                {quoteData.company.logoUrl && (
+                                    <img
+                                        src={quoteData.company.logoUrl}
+                                        alt={quoteData.company.name}
+                                        className="h-14 mr-4"
+                                    />
+                                )}
+                                <div>
+                                    <h2 className="font-bold text-gray-800">{quoteData.company.name}</h2>
+                                    <p className="text-sm text-gray-600">{quoteData.company.address}</p>
+                                    <p className="text-sm text-gray-600">{t('company_register')} № {quoteData.company.registerNumber}</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <h1 className="text-2xl font-bold text-gray-800">{t('proposal')}</h1>
+                                {quoteData.reference && (
+                                    <p className="text-sm text-gray-500">#{quoteData.reference}</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Order Summary Title */}
                 <div className="border-b border-gray-200 pb-4 mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">{t('order_summary')}</h2>
                 </div>
@@ -39,10 +106,7 @@ const QuoteConfirm: React.FC<QuoteConfirmProps> = ({
                         <div className="flex justify-between items-center py-2">
                             <span className="text-gray-700 text-base">{t('guarantee_value')}:</span>
                             <span className="font-semibold text-right">
-                                R$ {quoteData.guarantee.value.toLocaleString('pt-BR', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            }).replace('.', ',')}
+                                R$ {formatCurrency(quoteData.guarantee.value)}
                             </span>
                         </div>
 
@@ -65,6 +129,13 @@ const QuoteConfirm: React.FC<QuoteConfirmProps> = ({
                             <span className="text-gray-700 text-base">{t('currency')}:</span>
                             <span className="font-semibold text-right">BRL</span>
                         </div>
+
+                        {quoteData.bailLetterNo && (
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-gray-700 text-base">{t('bail_letter_no')}:</span>
+                                <span className="font-semibold text-right">{quoteData.bailLetterNo}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
@@ -90,6 +161,13 @@ const QuoteConfirm: React.FC<QuoteConfirmProps> = ({
                                 <div className="text-sm text-gray-500">{t('tax_id')}:</div>
                                 <div className="font-medium text-base">{quoteData.beneficiary.taxId}</div>
                             </div>
+
+                            {quoteData.purposeOfGuarantee && (
+                                <div className="pt-4 border-t border-gray-200 mt-4">
+                                    <div className="text-sm text-gray-500">{t('purpose_of_guarantee')}:</div>
+                                    <div className="font-medium text-base">{quoteData.purposeOfGuarantee}</div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

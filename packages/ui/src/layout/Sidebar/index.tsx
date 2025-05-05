@@ -1,3 +1,4 @@
+// Sidebar/index.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -18,6 +19,8 @@ interface SidebarProps {
         quotes: any[];
         onSelectQuote: (quoteId: string) => void;
     }>;
+    logoUrl?: string;
+    logoText?: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,7 +28,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                     onNewQuote,
                                                     quotes,
                                                     onSelectQuote,
-                                                    PreviousQuotes
+                                                    PreviousQuotes,
+                                                    logoUrl = "/images/ergo-logo.png",
+                                                    logoText = ""
                                                 }) => {
     const { t } = useTranslation();
     const [isMounted, setIsMounted] = useState(false);
@@ -40,7 +45,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className={`${isOpen ? 'w-64' : 'w-0'} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden`}>
             {/* Logo */}
             <div className="p-4 flex items-center h-16">
-                <div className="text-blue-600 font-bold text-xl">ERGO.AI</div>
+                {isOpen && (
+                    <div className="flex items-center">
+                        <img
+                            src={logoUrl}
+                            alt={logoText}
+                            className="h-8 mr-2"
+                        />
+                        <span className="text-blue-600 font-bold text-xl">{logoText}</span>
+                    </div>
+                )}
             </div>
 
             {/* Create Quote Button */}
