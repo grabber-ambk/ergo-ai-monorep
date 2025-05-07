@@ -7,4 +7,4 @@ export * from './modality/useModalityCoverages';
 export { default as useDateCalculations } from './date/useDateCalculations';
 export { default as useAdvancedForm } from './quotes/useAdvancedForm';
 export { default as useQuoteStages } from './quotes/useQuoteStages';
-export { useAllActiveModalities } from './useAllActiveModalities';
+

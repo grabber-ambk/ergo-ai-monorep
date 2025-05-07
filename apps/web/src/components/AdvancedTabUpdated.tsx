@@ -1,10 +1,15 @@
+//apps/web/src/components/AdvancedTabUpdated.tsx
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Upload, X } from 'lucide-react';
-import { useTranslation } from "@ergo-ai/i18n/src/client";
+import {useLocale, useTranslation} from "@ergo-ai/i18n/src/client";
 import ModalitySelection from "@/components/ModalitySelection";
 import CoverageSelection from "@/components/CoverageSelection";
+
+import { ModalitySelectionClient } from "@ergo-ai/ui/src/client/ModalitySelectorClient";
+import { CoverageSelectorClient } from "@ergo-ai/ui/src/client/CoverageSelectorClient";
+
 import DatePicker from "@/components/DatePicker";
 
 interface AdvancedTabProps {
@@ -48,6 +53,7 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
   const { t } = useTranslation(); // Hook de tradução
   const [showSummary, setShowSummary] = useState(false);
   const [localFormData, setLocalFormData] = useState(formData);
+  const { locale } = useLocale();
 
   // Estados para o upload de contrato
   const [showContractUpload, setShowContractUpload] = useState(false);
@@ -517,13 +523,14 @@ const AdvancedTabUpdated: React.FC<AdvancedTabProps> = ({
               )}
 
               {/* Modalidades dropdown */}
-              <ModalitySelection
+              <ModalitySelectionClient
                   value={localFormData.modalidade}
                   onChange={handleModalityChange}
+                  locale={locale} // Obter o locale da página ou do contexto
               />
 
               {/* Coberturas dropdown */}
-              <CoverageSelection
+              <CoverageSelectorClient
                   modalityId={localFormData.modalidade}
                   value={localFormData.cobertura || ""}
                   onChange={handleCoverageChange}

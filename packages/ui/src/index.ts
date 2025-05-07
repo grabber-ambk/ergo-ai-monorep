@@ -7,10 +7,21 @@ export * from './layout/MainLayout';
 export * from './common/LanguageSelector';
 export * from './common/UserProfileMenu';
 
+// Client Components
+export * from './client/ModalitySelectorClient';
+export * from './client/CoverageSelectorClient';
+
+export * from './utils/ClientOnlyIcon'
+
 // Default exports
 export { default as Sidebar } from './layout/Sidebar';
 export { default as Header } from './layout/Header';
 export { default as MainLayout } from './layout/MainLayout';
 export { LanguageSelector } from './common/LanguageSelector';
 export { default as UserProfileMenu } from './common/UserProfileMenu';
-export { default as ModalidadeCoberturaIntegration } from './integrations/ModalidadeCoberturaIntegration';
+export { ModalitySelectionClient } from './client/ModalitySelectorClient';
+export { CoverageSelectorClient } from './client/CoverageSelectorClient';
+export { ClientOnlyIcon } from './utils/ClientOnlyIcon'
+
+// Types
+export * from './types'

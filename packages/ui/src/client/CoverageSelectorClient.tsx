@@ -1,74 +1,73 @@
 // packages/ui/src/client/CoverageSelectorClient.tsx
 'use client'
 
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 import { ChevronDown } from 'lucide-react';
-import { useTranslation } from '@ergo-ai/i18n';
+import { useServerCoverages } from '@ergo-ai/hooks/src/coverage/useServerCoverages';
 
 interface CoverageSelectorClientProps {
-    initialCoverages: {
-        id: string;
-        name: string;
-    }[];
-    defaultValue?: string;
+    modalityId?: string;
+    value?: string;
     onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     isDisabled?: boolean;
 }
 
 export function CoverageSelectorClient({
-                                           initialCoverages = [],
-                                           defaultValue = '',
+                                           modalityId,
+                                           value = '',
                                            onChange,
-                                           isDisabled = false
+                                           isDisabled: externalDisabled = false
                                        }: CoverageSelectorClientProps) {
     const { t } = useTranslation();
-    const [value, setValue] = useState(defaultValue);
-    const [isClient, setIsClient] = useState(false);
 
-    // Marcar quando estamos no cliente
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+    const { coverages, isLoading, error } = useServerCoverages(modalityId, {
+        onError: (err) => console.error('Erro ao carregar coberturas:', err.message)
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setValue(e.target.value);
         if (onChange) {
             onChange(e);
         }
     };
 
+    const isDisabled = externalDisabled || !modalityId || isLoading;
+
     return (
         <div className="mb-4">
             <label className="block text-sm text-gray-500 mb-1">
-                {t('coberturas', 'Coberturas')}
+                {t('coverages')}
             </label>
             <div className="relative">
                 <select
                     name="cobertura"
                     value={value}
                     onChange={handleChange}
-                    disabled={isDisabled || !initialCoverages.length}
-                    className={`w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none ${
-                        isDisabled || !initialCoverages.length ? 'bg-gray-100 cursor-not-allowed' : ''
-                    }`}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
+                    disabled={isDisabled}
                 >
-                    <option value="" disabled>
-                        {!initialCoverages.length
-                            ? t('select_a_modality_first', 'Selecione uma modalidade primeiro')
-                            : t('select_a_coverage', 'Selecione uma cobertura')}
+                    <option value="">
+                        {isLoading
+                            ? t('loading')
+                            : !modalityId
+                                ? t('select_modality_first')
+                                : t('select_coverage')}
                     </option>
-                    {initialCoverages.map((coverage) => (
+                    {coverages.map((coverage) => (
                         <option key={coverage.id} value={coverage.name}>
                             {coverage.name}
                         </option>
                     ))}
                 </select>
-                {isClient && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <ChevronDown size={18} />
-                    </div>
-                )}
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <ChevronDown size={18} />
+                </div>
             </div>
+            {error && !isDisabled && (
+                <div className="mt-1 text-sm text-red-600">
+                    {t('error_loading_coverages')}
+                </div>
+            )}
         </div>
     );
 }

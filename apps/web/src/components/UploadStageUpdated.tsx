@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { Upload } from 'lucide-react';
 import AdvancedTabUpdated from './AdvancedTabUpdated';
 import { useTranslation } from "@ergo-ai/i18n/src/client";
+import {ClientOnlyIcon} from "@ergo-ai/ui";
 
 interface UploadStageProps {
     activeTab: string;
@@ -164,7 +165,9 @@ const UploadStageUpdated: React.FC<UploadStageProps> = ({
                                     onDrop={handleDrop}
                                 >
                                     <div className="mx-auto h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-4">
-                                        <Upload size={24} />
+                                        <ClientOnlyIcon>
+                                            <Upload size={24} />
+                                        </ClientOnlyIcon>
                                     </div>
                                     <p className="mb-2 text-sm text-gray-700">{t('drag_drop_contract')}</p>
                                     <button

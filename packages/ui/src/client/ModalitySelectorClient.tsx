@@ -1,46 +1,39 @@
-// packages/ui/src/client/ModalitySelectorClient.tsx
+// packages/ui/src/client/ModalitySelectionClient.tsx
 'use client'
 
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { useTranslation } from '@ergo-ai/i18n/src/client';
 import { ChevronDown } from 'lucide-react';
-import { useTranslation } from '@ergo-ai/i18n';
+import { useServerModalities } from '@ergo-ai/hooks/src/modality/useServerModalities';
 
-interface ModalitySelectorClientProps {
-    initialModalities: {
-        id: string;
-        name: string;
-    }[];
-    defaultValue?: string;
-    onChange?: (value: string) => void;
+interface ModalitySelectionClientProps {
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    locale?: string;
 }
 
-export function ModalitySelectorClient({
-                                           initialModalities,
-                                           defaultValue = '',
-                                           onChange
-                                       }: ModalitySelectorClientProps) {
+export function ModalitySelectionClient({
+                                            value = '',
+                                            onChange,
+                                            locale = 'en'
+                                        }: ModalitySelectionClientProps) {
     const { t } = useTranslation();
-    const [value, setValue] = useState(defaultValue);
-    // Adicionamos um estado para controlar se o componente está no cliente
-    const [isClient, setIsClient] = useState(false);
 
-    // Efeito para marcar quando o componente está no cliente
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+    const { modalities, isLoading, error } = useServerModalities({
+        locale,
+        onError: (err) => console.error('Erro ao carregar modalidades:', err.message)
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newValue = e.target.value;
-        setValue(newValue);
         if (onChange) {
-            onChange(newValue);
+            onChange(e);
         }
     };
 
     return (
         <div className="mb-4">
             <label className="block text-sm text-gray-500 mb-1">
-                {t("modalidades")}
+                {t('modalities')}
             </label>
             <div className="relative">
                 <select
@@ -48,23 +41,24 @@ export function ModalitySelectorClient({
                     value={value}
                     onChange={handleChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 appearance-none"
+                    disabled={isLoading}
                 >
-                    <option value="" disabled>
-                        {t("select_a_modality")}
-                    </option>
-                    {initialModalities.map((modality) => (
+                    <option value="">{isLoading ? t('loading') : t('select_modality')}</option>
+                    {modalities.map((modality) => (
                         <option key={modality.id} value={modality.name}>
                             {modality.name}
                         </option>
                     ))}
                 </select>
-                {/* Renderizar o ícone apenas do lado do cliente */}
-                {isClient && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <ChevronDown size={18} />
-                    </div>
-                )}
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <ChevronDown size={18} />
+                </div>
             </div>
+            {error && (
+                <div className="mt-1 text-sm text-red-600">
+                    {t('error_loading_modalities')}
+                </div>
+            )}
         </div>
     );
 }

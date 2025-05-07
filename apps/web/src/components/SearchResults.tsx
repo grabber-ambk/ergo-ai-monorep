@@ -1,6 +1,6 @@
 'use client'
 
-import '../app/globals.css';
+//import '../app/globals.css';
 
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
@@ -82,6 +82,22 @@ const SearchResults: React.FC<SearchResultsProps> = ({ onSelectResult }) => {
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [showResults, setShowResults] = useState(false);
 
+    // Componente interno para renderização client-only do ícone
+    const ClientOnlyIcon = ({ children }) => {
+        const [isClient, setIsClient] = useState(false);
+
+        useEffect(() => {
+            setIsClient(true);
+        }, []);
+
+        if (!isClient) {
+            return <span className="w-4 h-4 inline-block" />;
+        }
+
+        return children;
+    };
+
+
     // Simula uma busca com base no termo digitado
     useEffect(() => {
         if (searchTerm.length > 2) {
@@ -116,7 +132,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({ onSelectResult }) => {
             <div className="relative flex-grow max-w-xl mx-4">
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search size={16} className="text-gray-400" />
+                        <ClientOnlyIcon>
+                            <Search size={16} className="text-gray-400" strokeWidth={2} absoluteStrokeWidth />
+                        </ClientOnlyIcon>
                     </div>
                     <input
                         type="text"
