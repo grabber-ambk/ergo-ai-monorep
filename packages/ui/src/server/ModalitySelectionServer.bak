@@ -1,0 +1,21 @@
+// packages/ui/src/server/ModalityListServer.tsx
+import { getServerActiveModalitiesByLanguage } from '@ergo-ai/api-client/src/server/modality';
+
+interface ModalitySelectionServerProps {
+    locale: string;
+}
+
+export default async function ModalitySelectionServer({ locale }: ModalitySelectionServerProps) {
+    // Buscar dados no servidor
+    const modalities = await getServerActiveModalitiesByLanguage(locale);
+
+    // Preparar dados para uso no componente cliente
+    const formattedModalities = modalities.map((modality: any) => ({
+        id: modality.id,
+        name: modality.translations.find((t: any) => t.languageCode === locale)?.name
+            || modality.translations[0]?.name
+    }));
+
+    // Retornar dados formatados para uso no cliente
+    return { modalities: formattedModalities };
+}

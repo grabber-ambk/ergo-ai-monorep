@@ -1,4 +1,4 @@
-// hooks/useAllActiveModalities.ts
+// packages/hooks/useAllActiveModalities.ts
 'use client'
 
 import { useState, useEffect } from 'react';

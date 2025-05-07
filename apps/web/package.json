@@ -6,11 +6,13 @@
     "dev": "npx next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.17.1",
     "@ergo-ai/api-client": "workspace:*",
+    "@ergo-ai/api-server": "workspace:*",
     "@ergo-ai/hooks": "workspace:*",
     "@ergo-ai/i18n": "workspace:*",
     "@ergo-ai/ui": "workspace:*",
@@ -39,5 +41,5 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.3.3"
   },
-  "packageManager": "pnpm@8.15.1"
+  "packageManager": "pnpm@10.8.1"
 }

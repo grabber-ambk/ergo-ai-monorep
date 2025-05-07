@@ -1,4 +1,4 @@
-// hooks/useCoveragesByModality.ts
+// packages/hooks/useCoveragesByModality.ts
 'use client'
 
 import { useState, useEffect } from 'react';

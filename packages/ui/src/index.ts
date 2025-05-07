@@ -13,3 +13,4 @@ export { default as Header } from './layout/Header';
 export { default as MainLayout } from './layout/MainLayout';
 export { LanguageSelector } from './common/LanguageSelector';
 export { default as UserProfileMenu } from './common/UserProfileMenu';
+export { default as ModalidadeCoberturaIntegration } from './integrations/ModalidadeCoberturaIntegration';

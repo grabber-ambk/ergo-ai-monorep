@@ -477,13 +477,24 @@ function editCoverage(request) {
         });
     })();
 }
-// src/query/client.ts
+// src/query/browser-client.ts
 import { QueryClient } from "@tanstack/react-query";
 var queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1e3,
+            // 5 minutos
+            retry: 1
+        }
+    }
+});
+// src/query/client.ts
+import { QueryClient as QueryClient2 } from "@tanstack/react-query";
+var queryClient2 = new QueryClient2({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false
         }
     }
 });
-export { activeCoverage, createCoverage, disableCoverage, editCoverage, getActiveModalies, getActiveModalitiesByLanguage, getCoverageById, getCoveragesByModalityIdAndLanguage, getCoveragesByModalityName, getModalityCoverages, getTranslatedCoverages, jwtAxios, queryClient, setAuthToken, setSystem };
+export { activeCoverage, queryClient as browserQueryClient, createCoverage, disableCoverage, editCoverage, getActiveModalies, getActiveModalitiesByLanguage, getCoverageById, getCoveragesByModalityIdAndLanguage, getCoveragesByModalityName, getModalityCoverages, getTranslatedCoverages, jwtAxios, queryClient2 as queryClient, setAuthToken, setSystem };

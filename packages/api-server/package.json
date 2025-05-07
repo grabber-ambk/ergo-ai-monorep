@@ -1,0 +1,16 @@
+{
+  "name": "@ergo-ai/api-server",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@ergo-ai/api-client": "workspace:*",
+    "next": "^15.3.1",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.29",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.3.3"
+  }
+}

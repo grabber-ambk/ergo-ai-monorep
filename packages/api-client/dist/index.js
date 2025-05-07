@@ -214,6 +214,9 @@ __export(index_exports, {
     activeCoverage: function() {
         return activeCoverage;
     },
+    browserQueryClient: function() {
+        return queryClient;
+    },
     createCoverage: function() {
         return createCoverage;
     },
@@ -248,7 +251,7 @@ __export(index_exports, {
         return jwtAxios;
     },
     queryClient: function() {
-        return queryClient;
+        return queryClient2;
     },
     setAuthToken: function() {
         return setAuthToken;
@@ -586,9 +589,20 @@ function editCoverage(request) {
         });
     })();
 }
-// src/query/client.ts
+// src/query/browser-client.ts
 var import_react_query = require("@tanstack/react-query");
 var queryClient = new import_react_query.QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1e3,
+            // 5 minutos
+            retry: 1
+        }
+    }
+});
+// src/query/client.ts
+var import_react_query2 = require("@tanstack/react-query");
+var queryClient2 = new import_react_query2.QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false
@@ -598,6 +612,7 @@ var queryClient = new import_react_query.QueryClient({
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
     activeCoverage: activeCoverage,
+    browserQueryClient: browserQueryClient,
     createCoverage: createCoverage,
     disableCoverage: disableCoverage,
     editCoverage: editCoverage,
